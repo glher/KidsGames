@@ -56,10 +56,12 @@ def generate_choices():
 # Function to check the user's answer and update score
 def check_answer(user_input):
     global correct_count, total_count, score_update
+    disable_buttons()
     if user_input == correct_answer:
         hint_label.config(text=f"Correct! The correct rounded value is {correct_answer:,}.", fg="green")
         root.after(time_delay, lambda: hint_label.config(text=""))  # Clear hint after 5 seconds
         root.after(time_delay, generate_number_and_base)  # Wait 5 seconds, then generate a new number and base for the next round
+        root.after(time_delay, lambda: enable_buttons())  # Re-enable buttons after 3 seconds
         if score_update:
             total_count += 1
             correct_count += 1
@@ -68,6 +70,7 @@ def check_answer(user_input):
     else:
         hint_label.config(text=f"Incorrect. Look at the number line below to help you!", fg="red")
         draw_number_line()  # Show the number line
+        enable_buttons()
         if score_update:
             total_count += 1
             update_score()  # Update score and percentage display
@@ -111,6 +114,16 @@ def update_score():
             score_label.config(fg="darkgreen")
         
         score_label.config(text=score_text)
+
+def enable_buttons():
+    button1.config(state=tk.NORMAL)
+    button2.config(state=tk.NORMAL)
+    button3.config(state=tk.NORMAL)
+
+def disable_buttons():
+    button1.config(state=tk.DISABLED)
+    button2.config(state=tk.DISABLED)
+    button3.config(state=tk.DISABLED)
 
 # Setup the main window
 root = tk.Tk()

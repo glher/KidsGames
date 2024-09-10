@@ -72,9 +72,10 @@ def check_answer(user_input):
             total_count += 1
             correct_count += 1
             update_score()  # Update score and percentage display
+        question_counter_label.config(text=f"Answered: {total_count}")
         score_update = True
     else:
-        hint_label.config(text=f"Incorrect.", fg="red")
+        hint_label.config(text=f"Incorrect. Look at the table below to help you!", fg="red")
         # Create matrix with rainbow background
         create_matrix()
         enable_buttons()
@@ -99,6 +100,22 @@ def update_score():
             score_label.config(fg="darkgreen")
         
         score_label.config(text=score_text)
+
+        # Check for prize condition
+        if (total_count == prize_threshold and percentage > 90) or (total_count == 2*prize_threshold and percentage > 70):
+            show_prize_popup()
+
+def show_prize_popup():
+    prize_popup = tk.Toplevel(root)
+    prize_popup.title("Well Done Madeleine!")
+    prize_popup.geometry("800x100")
+    prize_popup.config(bg="#F0F0F0")
+
+    message_label = tk.Label(prize_popup, text="Congratulations for your hard work! You get a prize! ", font=("Helvetica", 12), bg="#F0F0F0")
+    message_label.pack(pady=20, padx=20)
+
+    # Disable main window interaction until popup is closed
+    root.wait_window(prize_popup)
 
 def enable_buttons():
     button1.config(state=tk.NORMAL)
@@ -167,7 +184,7 @@ def create_matrix():
 # Setup the main window
 root = tk.Tk()
 root.title("Multiplication/Division Game with Matrix")
-root.geometry("1500x1500")
+root.geometry("1500x1600")
 root.config(bg="#F0F0F0")
 
 # Labels and widgets
@@ -198,6 +215,12 @@ hint_label.pack(pady=10)
 # Score label at the bottom
 score_label = tk.Label(root, text="Score: 0%", font=("Helvetica", 14), bg="#F0F0F0")
 score_label.pack(pady=10, padx=10, anchor="se")
+
+# Create a label for the question counter
+question_counter_label = tk.Label(root, text="Answered: 0", font=("Helvetica", 14), bg="#F0F0F0")
+question_counter_label.pack(pady=10, padx=10, anchor="sw")
+
+prize_threshold = random.randint(35, 75)
 
 # Frame for the matrix
 matrix_frame = tk.Frame(root, bg="#F0F0F0")
